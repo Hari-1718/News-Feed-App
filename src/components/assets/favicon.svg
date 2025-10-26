@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#06b6d4"/>
+      <stop offset="1" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+  <!-- circular background so browsers show a round favicon -->
+  <circle cx="60" cy="60" r="60" fill="#0f172a" />
+  <g transform="translate(12,18)">
+    <rect width="96" height="84" rx="12" fill="url(#g)" />
+    <path d="M16 28h64v6H16zM16 44h64v6H16zM16 60h36v6H16z" fill="#fff" opacity="0.95"/>
+  </g>
+</svg>
