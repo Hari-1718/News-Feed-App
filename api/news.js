@@ -1,7 +1,7 @@
 // Serverless proxy to fetch news from GNews or NewsAPI securely on the server
 // This avoids CORS / plan restrictions when calling GNews from the browser.
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     const { provider = 'gnews', q = '', cat = '', page = '1' } = req.query || {}
     const PAGE_SIZE = 8
@@ -13,7 +13,11 @@ export default async function handler(req, res) {
     const NEWSAPI_KEY = process.env.NEWSAPI_KEY || process.env.VITE_NEWSAPI_KEY
 
     if (provider === 'newsapi') {
-      if (!NEWSAPI_KEY) return res.status(400).json({ message: 'Missing NewsAPI key' })
+      if (!NEWSAPI_KEY) {
+        res.statusCode = 400
+        res.setHeader('content-type', 'application/json')
+        return res.end(JSON.stringify({ message: 'Missing NewsAPI key' }))
+      }
       const params = new URLSearchParams()
       params.set('q', searchTerm)
       params.set('language', 'en')
@@ -22,12 +26,18 @@ export default async function handler(req, res) {
       params.set('apiKey', NEWSAPI_KEY)
       const url = `https://newsapi.org/v2/everything?${params.toString()}`
       const upstream = await fetch(url)
-      const data = await upstream.json()
-      return res.status(upstream.status).json(data)
+      const text = await upstream.text()
+      res.statusCode = upstream.status
+      res.setHeader('content-type', upstream.headers.get('content-type') || 'application/json')
+      return res.end(text)
     }
 
     // default: GNews
-    if (!GNEWS_KEY) return res.status(400).json({ message: 'Missing GNews API key' })
+    if (!GNEWS_KEY) {
+      res.statusCode = 400
+      res.setHeader('content-type', 'application/json')
+      return res.end(JSON.stringify({ message: 'Missing GNews API key' }))
+    }
     const params = new URLSearchParams()
     params.set('q', searchTerm)
     params.set('lang', 'en')
@@ -36,10 +46,14 @@ export default async function handler(req, res) {
     params.set('token', GNEWS_KEY)
     const url = `https://gnews.io/api/v4/search?${params.toString()}`
     const upstream = await fetch(url)
-    const data = await upstream.json()
-    return res.status(upstream.status).json(data)
+    const text = await upstream.text()
+    res.statusCode = upstream.status
+    res.setHeader('content-type', upstream.headers.get('content-type') || 'application/json')
+    return res.end(text)
   } catch (err) {
     console.error('api/news error', err)
-    res.status(500).json({ message: err.message || 'Server error' })
+    res.statusCode = 500
+    res.setHeader('content-type', 'application/json')
+    return res.end(JSON.stringify({ message: err.message || 'Server error' }))
   }
 }

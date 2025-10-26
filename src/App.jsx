@@ -50,15 +50,26 @@ export default function App() {
   useEffect(() => {
     let cancelled = false
 
+    // Helper that safely parses JSON responses and throws a readable error if the
+    // upstream returned HTML (e.g. an error page) which would cause "Unexpected token '<'".
+    async function parseJsonSafe(res) {
+      const ct = res.headers.get('content-type') || ''
+      if (ct.includes('application/json')) return await res.json()
+      const text = await res.text()
+      // If upstream returned HTML (starts with <!doctype or <html), include a short snippet in the error
+      const snippet = text && text.length > 0 ? (text.length > 200 ? text.slice(0, 200) + '...' : text) : ''
+      throw new Error(snippet || `Unexpected non-JSON response (${res.status})`)
+    }
+
     async function fetchGNews(q, cat, p) {
       const params = new URLSearchParams()
       const searchTerm = q ? q : (cat ? cat : DEFAULT_QUERY)
       params.set('q', searchTerm)
-  params.set('page', String(p))
-  params.set('max', PAGE_SIZE)
-  const url = `/api/news?provider=gnews&${params.toString()}`
+      params.set('page', String(p))
+      params.set('max', PAGE_SIZE)
+      const url = `/api/news?provider=gnews&${params.toString()}`
       const res = await fetch(url)
-      const data = await res.json()
+      const data = await parseJsonSafe(res)
       return { res, data }
     }
 
@@ -66,11 +77,11 @@ export default function App() {
       const params = new URLSearchParams()
       const searchTerm = q ? q : (cat ? cat : DEFAULT_QUERY)
       params.set('q', searchTerm)
-  params.set('page', String(p))
-  params.set('pageSize', PAGE_SIZE)
-  const url = `/api/news?provider=newsapi&${params.toString()}`
+      params.set('page', String(p))
+      params.set('pageSize', PAGE_SIZE)
+      const url = `/api/news?provider=newsapi&${params.toString()}`
       const res = await fetch(url)
-      const data = await res.json()
+      const data = await parseJsonSafe(res)
       return { res, data }
     }
 
