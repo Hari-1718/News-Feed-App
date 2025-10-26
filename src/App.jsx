@@ -194,6 +194,8 @@ export default function App() {
       {!loading && !error && articles.length === 0 && (
         <div className="mt-8 text-center text-gray-500">No articles found.</div>
       )}
+      {/* Deploy test footer — shows a timestamp so you can confirm Vercel served the latest build */}
+      <div className="mt-6 text-center text-sm text-gray-400">Deployed test: {new Date().toLocaleString()}</div>
     </div>
   )
 }
