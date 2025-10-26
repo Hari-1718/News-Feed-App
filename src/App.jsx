@@ -3,6 +3,7 @@ import Header from './components/Header'
 import ArticleCard from './components/ArticleCard'
 import ThemeToggle from './components/ThemeToggle'
 import logo from './components/assets/newsfeedlogo.svg'
+import sampleArticles from './sample-articles.json'
 
 // Read API key from environment (Vite exposes VITE_* variables)
 const API_KEY = import.meta.env.VITE_GNEWS_API_KEY
@@ -84,9 +85,15 @@ export default function App() {
       setLoading(true)
       setError(null)
 
+      // If no API key is present, use bundled demo articles so the app still works.
       if (!API_KEY) {
-        setError('No API key found. Add VITE_GNEWS_API_KEY to .env')
-        setLoading(false)
+        // sampleArticles already matches the final article shape used by the UI.
+        if (!cancelled) {
+          setArticles(sampleArticles)
+          setHasMore(false)
+          setProviderUsed('Demo')
+          setLoading(false)
+        }
         return
       }
 

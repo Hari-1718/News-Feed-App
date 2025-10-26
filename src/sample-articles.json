@@ -1,0 +1,23 @@
+[
+  {
+    "title": "Local demo: Breakthrough in renewable energy",
+    "description": "Researchers have announced a low-cost method to increase solar cell efficiency.",
+    "image": "https://images.unsplash.com/photo-1509395176047-4a66953fd231?w=800&q=80",
+    "url": "https://example.com/demo/renewable-energy",
+    "source": { "name": "Demo News" }
+  },
+  {
+    "title": "Demo: Startup raises funding for AI-driven health app",
+    "description": "A small startup raised seed funding to expand its AI health platform.",
+    "image": "https://images.unsplash.com/photo-1581090462474-1e3d0d0d9c3f?w=800&q=80",
+    "url": "https://example.com/demo/ai-health",
+    "source": { "name": "Demo Business" }
+  },
+  {
+    "title": "Demo sports: Local team wins championship",
+    "description": "An exciting finish gives the local team the regional title.",
+    "image": "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&q=80",
+    "url": "https://example.com/demo/sports-win",
+    "source": { "name": "Demo Sports" }
+  }
+]
