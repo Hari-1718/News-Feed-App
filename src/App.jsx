@@ -3,10 +3,9 @@ import Header from './components/Header'
 import ArticleCard from './components/ArticleCard'
 import ThemeToggle from './components/ThemeToggle'
 import logo from './components/assets/newsfeedlogo.svg'
-import sampleArticles from './sample-articles.json'
-
 // Read API key from environment (Vite exposes VITE_* variables)
-const API_KEY = import.meta.env.VITE_GNEWS_API_KEY
+// If no env var is set, fall back to the provided key so the app fetches live articles.
+const API_KEY = import.meta.env.VITE_GNEWS_API_KEY || 'fad1ee003f9541a39dfa0c8cd864d833'
 const PAGE_SIZE = 8
 const DEFAULT_QUERY = 'latest'
 
@@ -85,17 +84,7 @@ export default function App() {
       setLoading(true)
       setError(null)
 
-      // If no API key is present, use bundled demo articles so the app still works.
-      if (!API_KEY) {
-        // sampleArticles already matches the final article shape used by the UI.
-        if (!cancelled) {
-          setArticles(sampleArticles)
-          setHasMore(false)
-          setProviderUsed('Demo')
-          setLoading(false)
-        }
-        return
-      }
+      // API key is provided (either via env var or hardcoded fallback). Proceed to fetch live articles.
 
       try {
         // Try GNews first
