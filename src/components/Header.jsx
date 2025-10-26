@@ -38,7 +38,7 @@ export default function Header({ onSearch, onCategory, activeCategory }) {
             key={name}
             onClick={() => onCategory(name)}
             className={`px-3 py-1 rounded-full text-sm ${activeCategory === name ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800'}`}
-          >{name.charAt(0).toUpperCase() + name.slice(1)}</button>
+          >{name}</button>
         ))}
       </div>
     </div>
