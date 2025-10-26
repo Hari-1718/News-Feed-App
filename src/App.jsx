@@ -5,7 +5,7 @@ import ThemeToggle from './components/ThemeToggle'
 import logo from './components/assets/newsfeedlogo.svg'
 // Read API key from environment (Vite exposes VITE_* variables)
 // If no env var is set, fall back to the provided key so the app fetches live articles.
-const API_KEY = import.meta.env.VITE_GNEWS_API_KEY || 'fad1ee003f9541a39dfa0c8cd864d833'
+  const API_KEY = null
 const PAGE_SIZE = 8
 const DEFAULT_QUERY = 'latest'
 
@@ -51,30 +51,24 @@ export default function App() {
     let cancelled = false
 
     async function fetchGNews(q, cat, p) {
-      const base = 'https://gnews.io/api/v4/search'
       const params = new URLSearchParams()
       const searchTerm = q ? q : (cat ? cat : DEFAULT_QUERY)
       params.set('q', searchTerm)
-      params.set('lang', 'en')
-      params.set('max', PAGE_SIZE)
-      params.set('page', String(p))
-      params.set('token', API_KEY)
-      const url = `${base}?${params.toString()}`
+  params.set('page', String(p))
+  params.set('max', PAGE_SIZE)
+  const url = `/api/news?provider=gnews&${params.toString()}`
       const res = await fetch(url)
       const data = await res.json()
       return { res, data }
     }
 
     async function fetchNewsApi(q, cat, p) {
-      const base = 'https://newsapi.org/v2/everything'
       const params = new URLSearchParams()
       const searchTerm = q ? q : (cat ? cat : DEFAULT_QUERY)
       params.set('q', searchTerm)
-      params.set('language', 'en')
-      params.set('pageSize', PAGE_SIZE)
-      params.set('page', String(p))
-      params.set('apiKey', API_KEY)
-      const url = `${base}?${params.toString()}`
+  params.set('page', String(p))
+  params.set('pageSize', PAGE_SIZE)
+  const url = `/api/news?provider=newsapi&${params.toString()}`
       const res = await fetch(url)
       const data = await res.json()
       return { res, data }
@@ -84,7 +78,7 @@ export default function App() {
       setLoading(true)
       setError(null)
 
-      // API key is provided (either via env var or hardcoded fallback). Proceed to fetch live articles.
+  // Proceed to fetch live articles via serverless proxy.
 
       try {
         // Try GNews first
