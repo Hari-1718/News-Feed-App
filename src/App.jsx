@@ -115,7 +115,14 @@ export default function App() {
         setProviderUsed('GNews')
       } catch (err) {
         if (cancelled) return
-        setError(err && err.message ? err.message : 'Something went wrong')
+        const raw = err && err.message ? String(err.message) : ''
+        const lower = raw.toLowerCase()
+        // If upstream returned HTML (index.html) we'll see '<!doctype' or '<html' in the message.
+        if (lower.includes('<!doctype') || lower.includes('<html') || lower.includes('unexpected non-json') ) {
+          setError('Server API returned HTML instead of JSON. This usually means the API route is not reachable on the server (e.g. vercel.json rewrote /api to index.html) or the serverless function failed. Ensure your API is deployed and API keys are set in Vercel environment variables.')
+        } else {
+          setError(raw || 'Something went wrong')
+        }
       } finally {
         if (!cancelled) setLoading(false)
       }
